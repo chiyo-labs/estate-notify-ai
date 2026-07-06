@@ -1,142 +1,205 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
+/* ── Layout ─────────────────────────────────────────── */
+.wrapper {
+  min-height: 100vh;
+  background: #F3F4F6;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
+.header {
+  background: #1E3A5F;
+  color: #ffffff;
+  padding: 22px 40px;
   display: flex;
-  flex: 1;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #93C5FD;
+  margin-top: 6px;
+  letter-spacing: 0.01em;
+}
+
+.demoBadge {
+  background: #F59E0B;
+  color: #ffffff;
+  padding: 4px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .main {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 32px;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
+/* ── Stats Cards ────────────────────────────────────── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  font-size: 14px;
+  margin-bottom: 28px;
 }
 
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
+.statCard {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.statLabel {
+  display: block;
+  font-size: 12px;
+  color: #6B7280;
+  margin-bottom: 10px;
   font-weight: 500;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+.statValue {
+  font-size: 36px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.statPending  { color: #F59E0B; }
+.statNotified { color: #10B981; }
+.statUrgent   { color: #EF4444; }
+
+/* ── Table Section ──────────────────────────────────── */
+.tableWrapper {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.empty {
+  color: #9CA3AF;
+  font-size: 14px;
+  padding: 40px 0;
+  text-align: center;
+}
+
+/* ── Table ──────────────────────────────────────────── */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: #374151;
+}
+
+.table th {
+  background: #F9FAFB;
+  color: #6B7280;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid #E5E7EB;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: #FAFAFA;
+}
+
+/* ── Badges ─────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* source */
+.sourceLine  { background: #D1FAE5; color: #065F46; }
+.sourceEmail { background: #DBEAFE; color: #1E40AF; }
+
+/* category */
+.catRental    { background: #DBEAFE; color: #1E40AF; }
+.catSale      { background: #D1FAE5; color: #065F46; }
+.catPreview   { background: #FEF3C7; color: #92400E; }
+.catComplaint { background: #FEE2E2; color: #991B1B; }
+
+/* status */
+.statusPending    { background: #F3F4F6; color: #6B7280; }
+.statusClassified { background: #EDE9FE; color: #5B21B6; }
+.statusNotified   { background: #D1FAE5; color: #065F46; }
+.statusFailed     { background: #FEE2E2; color: #991B1B; }
+
+/* ── Misc ───────────────────────────────────────────── */
+.nowrap  { white-space: nowrap; font-size: 12px; color: #6B7280; }
+.center  { text-align: center; }
+.dash    { color: #D1D5DB; }
+
+.sender {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.bodyCell {
+  max-width: 320px;
+  color: #4B5563;
+  line-height: 1.4;
+}
+
+.urgentIcon { font-size: 15px; }
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-}
-
-@media (max-width: 600px) {
   .main {
-    padding: 48px 24px;
+    padding: 20px 16px;
   }
 
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .header {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
