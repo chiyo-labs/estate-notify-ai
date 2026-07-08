@@ -152,6 +152,13 @@ function sourceBadgeClass(source: InquirySource): string {
   return source === 'line' ? styles.sourceLine : styles.sourceEmail;
 }
 
+function senderDisplay(row: InquiryQueue): string {
+  if (row.source === 'line') {
+    return 'LINEユーザー';
+  }
+  return row.sender_name ?? '—';
+}
+
 // ── ページ本体 ───────────────────────────────────────────────────
 export default async function DashboardPage() {
   const { rows, isDemo } = await fetchInquiries();
@@ -222,7 +229,7 @@ export default async function DashboardPage() {
                         </span>
                       </td>
                       <td className={styles.sender}>
-                        {row.sender_name ?? row.sender_id ?? '—'}
+                        {senderDisplay(row)}
                       </td>
                       <td>
                         {row.category ? (
