@@ -4,6 +4,37 @@
 メール・LINEから届く問い合わせを Supabase に保存し、Claude でカテゴリ分類して Slack へ通知します。  
 クレームなど緊急問い合わせは営業部長の LINE へ 5 分以内に Push 通知します。
 
+## デモURL
+
+管理画面デモ: https://estate-notify-ai.vercel.app/
+
+## このプロジェクトでできること
+
+- LINE / メールから届いた問い合わせを Supabase に保存
+- Claude で問い合わせカテゴリを自動分類（賃貸 / 売買 / 内見 / クレーム）
+- Slack へカテゴリ別に通知
+- クレーム・緊急時は営業部長の LINE へ Push 通知
+- 管理画面で問い合わせ状況（分類結果・緊急フラグ・通知ステータス）を確認できる
+
+## 本番公開状況
+
+- Vercelにデプロイ済み（GitHub `main` ブランチと連携し、pushで自動デプロイ）
+- Supabaseの実データを管理画面で表示確認済み
+
+### 運用上の制限・調整
+
+- Vercel Hobbyプランでは Cron の実行間隔が1日1回までのため、`vercel.json` の Cron設定は `0 0 * * *`（1日1回）に調整済み
+- 教材・ローカル検証では手動で `/api/cron/classify` を実行し、Claude分類・Slack通知・LINE Pushの実送信を確認済み
+- 本番環境では、意図しない通知の重複送信を避けるため `/api/cron/classify` を不用意に手動実行しない運用としている
+
+### セキュリティ・プライバシーへの配慮
+
+- `.env.local` はGit管理対象外（`.gitignore` の `.env*` パターンで除外）
+- APIキー・トークン・Secretの実値はVercelの Environment Variables で管理し、リポジトリには含めない
+- 管理画面ではLINEの `sender_id`（内部ユーザーID）をそのまま表示せず、「LINEユーザー」という汎用表示に置き換えている
+- `LINE_MANAGER_USER_ID` は個人のLINE User IDに紐づくため、本番環境（Vercel）には設定しない方針
+- `LINE_MANAGER_USER_ID` 未設定時はLINE Pushのみスキップし、Slack通知が成功していれば問い合わせ全体は `notified` として正常完了する
+
 ## 技術スタック
 
 | 役割 | 技術 |
