@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { classifyInquiry } from '@/lib/claude/classify';
 import { notifySlack } from '@/lib/slack/notify';
-import { pushToManager } from '@/lib/line/push';
+import { pushToManager, getLinePushSkipReason } from '@/lib/line/push';
 import {
   getPendingInquiries,
   updateClassified,
@@ -73,18 +73,23 @@ export async function GET(req: NextRequest) {
 
     // ── 4. クレーム or 緊急 → LINE Push 通知 ────────────────
     if (category === 'クレーム' || is_urgent) {
-      try {
-        const preview = inquiry.body.length > 200
-          ? `${inquiry.body.slice(0, 200)}…`
-          : inquiry.body;
-        await pushToManager(
-          `【緊急】新規クレーム問い合わせ\n受信元: ${inquiry.source}\n本文: ${preview}`,
-        );
-      } catch (err) {
-        console.error(`[pushToManager] id=${inquiry.id}`, err);
-        await updateToFailed(inquiry.id);
-        stats.failed++;
-        continue;
+      const skipReason = getLinePushSkipReason();
+      if (skipReason) {
+        console.log(`[pushToManager] id=${inquiry.id} LINE Push skipped: ${skipReason}`);
+      } else {
+        try {
+          const preview = inquiry.body.length > 200
+            ? `${inquiry.body.slice(0, 200)}…`
+            : inquiry.body;
+          await pushToManager(
+            `【緊急】新規クレーム問い合わせ\n受信元: ${inquiry.source}\n本文: ${preview}`,
+          );
+        } catch (err) {
+          console.error(`[pushToManager] id=${inquiry.id}`, err);
+          await updateToFailed(inquiry.id);
+          stats.failed++;
+          continue;
+        }
       }
     }
 

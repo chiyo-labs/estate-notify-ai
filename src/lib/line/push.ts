@@ -1,6 +1,20 @@
 const LINE_PUSH_URL = 'https://api.line.me/v2/bot/message/push';
 
 /**
+ * LINE Push が実行可能な設定かどうかを判定する。
+ * 未設定の場合はスキップ理由の文字列を返す（設定済みなら null）。
+ */
+export function getLinePushSkipReason(): string | null {
+  if (!process.env.LINE_CHANNEL_ACCESS_TOKEN) {
+    return 'LINE_CHANNEL_ACCESS_TOKEN is not set';
+  }
+  if (!process.env.LINE_MANAGER_USER_ID) {
+    return 'LINE_MANAGER_USER_ID is not set';
+  }
+  return null;
+}
+
+/**
  * 営業部長のLINEアカウントへPush通知を送る。
  * クレーム判定時のみ使用する想定。
  * 失敗時は例外を投げる。
