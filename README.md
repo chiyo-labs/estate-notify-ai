@@ -364,3 +364,75 @@ data/
 scripts/
     └── test-classify.ts              # 精度確認スクリプト
 ```
+
+---
+
+## 納品・運用引き継ぎ
+
+### 運用マニュアル
+
+- 普段はSlack通知と管理画面を確認する
+- 問い合わせは管理画面で総件数・未分類・通知済み・緊急件数を確認できる
+- Slack通知が来ない場合は、Vercel FunctionsログとSupabaseの `inquiry_queue` を確認する
+- `status='failed'` が増えている場合は、分類・通知処理でエラーが起きている可能性がある
+- 本番環境では個人LINE IDを設定しないため、LINE Pushはスキップ運用としている
+
+### 障害時の確認手順
+
+1. Vercelの Deployments / Functions Logs を確認する
+2. Supabaseの `inquiry_queue` で `status` を確認する
+3. `failed` がある場合は `raw_payload` や `body` を確認する
+4. Slack Bot TokenやLINE Channel Access Tokenの有効期限・権限を確認する
+5. 必要に応じてAPIキーをローテーションする
+
+### 監視SQL
+
+直近24時間の `status` 別件数を確認するSQLです（Supabase SQL Editorで実行）。
+
+```sql
+SELECT status, COUNT(*) AS count
+FROM inquiry_queue
+WHERE created_at > NOW() - INTERVAL '24 hours'
+GROUP BY status
+ORDER BY status;
+```
+
+- 直近24時間の pending / notified / failed 件数を確認する
+- `failed` が増えている場合は、通知処理やClaude分類で障害が起きている可能性がある
+- 低予算案件ではDatadog等の外部監視ツールを使わず、Supabase SQLで最小限の監視を行う運用としている
+
+### APIキーローテーション手順
+
+**対象キー:**
+
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `ANTHROPIC_API_KEY`
+- `SLACK_BOT_TOKEN`
+- `LINE_CHANNEL_SECRET`
+- `LINE_CHANNEL_ACCESS_TOKEN`
+- `INTERNAL_API_SECRET`
+- `CRON_SECRET`
+
+**手順:**
+
+1. 各サービスの管理画面でキーを再発行する
+2. Vercel の Environment Variables を更新する
+3. Vercel で Redeploy する
+4. LINE Webhook・メールAPI・Slack通知の動作確認を行う
+5. 古いキーを無効化する
+
+**注意:**
+
+- `.env.local` はGit管理しない
+- READMEに実際のキー値を書かない
+- GitHubにSecretをpushしない
+
+### Phase 2 提案: 電話自動応答 + テキスト化
+
+現状、電話問い合わせはMVP対象外のため、月50件程度の電話問い合わせはSlack上に履歴が残らない。Phase 2ではTwilioで電話番号を取得し、音声をWhisper等で文字起こしし、既存のClaude分類フローへ合流させる。
+
+| 項目 | 目安 |
+|---|---|
+| 初期費用 | 12万円 |
+| 月額費用 | 5,000円程度 |
+| 期間 | 3営業日 |
